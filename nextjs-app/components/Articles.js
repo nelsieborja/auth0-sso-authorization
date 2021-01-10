@@ -1,12 +1,23 @@
+import { useState } from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from "@material-ui/lab/Alert";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+
+import Slide from "@material-ui/core/Slide";
 import { makeStyles } from "@material-ui/core/styles";
 import { useApi } from "../hooks/use-api";
+
+function SlideTransition(props) {
+  return <Slide {...props} direction="up" />;
+}
 
 const useStyles = makeStyles((theme) => ({
   by: {
@@ -15,6 +26,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Articles = ({ isWriter }) => {
+  const [open, setOpen] = useState("");
+  const handleOpen = (id) => setOpen(`Delete article: ${id}`);
+  const handleClose = () => setOpen("");
+
   const classes = useStyles();
 
   const { loading, error, data: articles = [] } = useApi(
@@ -55,19 +70,46 @@ const Articles = ({ isWriter }) => {
                 <Typography variant="body2" component="p">
                   {article.body}
                 </Typography>
-                {/* <CardActions>
-                <Button size="small" color="primary">
-                  Share
-                </Button>
-                <Button size="small" color="primary">
-                  Learn More
-                </Button>
-              </CardActions> */}
               </CardContent>
+
+              {isWriter && (
+                <CardActions>
+                  <Button
+                    size="small"
+                    color="primary"
+                    onClick={() => handleOpen(article.title)}
+                  >
+                    Delete
+                  </Button>
+                </CardActions>
+              )}
             </Card>
           </Grid>
         ))}
       </Grid>
+
+      <Snackbar
+        TransitionComponent={SlideTransition}
+        open={open !== ""}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={open}
+        action={
+          <>
+            <Button color="secondary" size="small" onClick={handleClose}>
+              DELETE
+            </Button>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </>
+        }
+      />
     </>
   );
 };

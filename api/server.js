@@ -6,6 +6,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const bodyParser = require("body-parser");
+const faker = require("faker");
 
 const articles = require("./fadeData").articles();
 
@@ -52,11 +53,22 @@ app.head("/", (req, res) => res.send("ok"));
 
 // Create articles API endpoint
 app.post(
-  "/articles",
+  "/article",
   jwtCheck,
   jwtAuthz(["create:articles"], { customScopeKey: "permissions" }),
   function (req, res) {
     const article = req.body;
+
+    // Determine id for new article
+    var max = Math.max(...articles.map((elt) => elt.id));
+    article.id = max + 1;
+    article.date = faker.date.recent();
+
+    // Associate the articles entry with the current user
+    article.user_id = req.user[`${AUTH0_NAMESPACE}email`];
+
+    // Append the article
+    articles.push(req.body);
 
     // Send the response
     res.status(201).send(article);

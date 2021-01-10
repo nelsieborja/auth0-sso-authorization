@@ -14,7 +14,7 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Link from "@material-ui/core/Link";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Add from "../components/Add";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +44,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
   const classes = useStyles();
+  const [refreshed, setRefreshed] = useState(0);
+  const forceRefresh = () => setRefreshed(refreshed + 1);
 
   const {
     isLoading,
@@ -147,11 +149,13 @@ export default function Home() {
                 </Typography>
               </Grid>
 
-              {hasRoles && roles[0] === "writer" && <Add />}
+              {hasRoles && roles[0] === "writer" && (
+                <Add forceRefresh={forceRefresh} />
+              )}
             </Grid>
 
             {hasRoles ? (
-              <Articles isWriter={roles[0] === "writer"} />
+              <Articles key={refreshed} isWriter={roles[0] === "writer"} />
             ) : (
               <Alert severity="info">
                 We are reviewing your registration...
@@ -160,7 +164,9 @@ export default function Home() {
           </>
         ) : (
           !isLoading &&
-          !error && <Typography variant="h4">More info later...</Typography>
+          !error && (
+            <Typography variant="h4">This is a SSR application</Typography>
+          )
         )}
       </Container>
     </>
