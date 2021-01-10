@@ -74,11 +74,11 @@ export default function Home() {
       <AppBar position="static" color="inherit">
         <Toolbar>
           <Typography variant="h6" className={classes.wide}>
-            Articles App
+            SSR Articles App
           </Typography>
 
           <Breadcrumbs aria-label="breadcrumb">
-            <Link color="inherit" href="/">
+            <Link color="inherit" href="http://localhost:3001/">
               Dashboard
             </Link>
             <Typography color="textPrimary">Articles</Typography>
@@ -164,9 +164,7 @@ export default function Home() {
           </>
         ) : (
           !isLoading &&
-          !error && (
-            <Typography variant="h4">This is a SSR application</Typography>
-          )
+          !error && <Typography variant="h6">You are not logged in.</Typography>
         )}
       </Container>
     </>
