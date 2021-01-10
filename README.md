@@ -14,7 +14,11 @@ What are implemented:
 
 Run each application by going to the app's folder then running the corresponding script for starting that app - don't forget to install the dependencies first! Also, note that the integration is done only in development environment.
 
----
+### Prerequisite
+
+1. Create an Auth0 account
+2. Create two applications (SRR + CRA apps) in your Auth0 dashboard
+3. Configure the `.env` file for each app (including api) by adding the required env variables (domain, client ID, namespace, etc.)
 
 ### Reference
 
